@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VIOLACIÓN DEL SISTEMA</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff41;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Líneas de exploración */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 100;
+      animation: scan 8s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+
+    /* Superposición de parpadeo/glitch */
+    .glitch-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      pointer-events: none;
+      z-index: 50;
+      animation: flicker 0.15s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+      92% { opacity: 0.4; }
+      94% { opacity: 1; }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px 16px;
+      text-align: center;
+      z-index: 10;
+      position: relative;
+    }
+
+    .skull {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: 12px;
+      animation: pulse 1.2s ease-in-out infinite;
+      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+      color: #ff0033;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.7; }
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ff0033;
+      text-shadow: 
+        0 0 10px #ff0033,
+        0 0 20px #ff0033,
+        2px 2px 0 #00ff41,
+        -2px -2px 0 #00ff41;
+      animation: glitchText 2.5s infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes glitchText {
+      0%, 100% { transform: translate(0); }
+      10% { transform: translate(-3px, 1px); }
+      20% { transform: translate(3px, -1px); }
+      30% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      50% { transform: translate(0); }
+      60% { transform: translate(3px, 1px); }
+      70% { transform: translate(-3px, -1px); }
+      80% { transform: translate(2px, 2px); }
+      90% { transform: translate(-2px, -2px); }
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #00ff41;
+      margin-bottom: 24px;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    .warning-box {
+      background: rgba(255, 0, 51, 0.1);
+      border: 1px solid #ff0033;
+      border-radius: 4px;
+      padding: 14px 12px;
+      margin-bottom: 20px;
+      text-align: left;
+      box-shadow: 0 0 15px rgba(255, 0, 51, 0.3);
+    }
+
+    .warning-box p {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      color: #ff6666;
+    }
+
+    .warning-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .terminal {
+      background: #0a0a0a;
+      border: 1px solid #00ff41;
+      border-radius: 4px;
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.6;
+      max-height: 180px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .terminal .line {
+      opacity: 0;
+      animation: typeIn 0.1s forwards;
+    }
+
+    .terminal .line:nth-child(1) { animation-delay: 0.3s; }
+    .terminal .line:nth-child(2) { animation-delay: 0.8s; }
+    .terminal .line:nth-child(3) { animation-delay: 1.3s; }
+    .terminal .line:nth-child(4) { animation-delay: 1.9s; }
+    .terminal .line:nth-child(5) { animation-delay: 2.5s; }
+    .terminal .line:nth-child(6) { animation-delay: 3.1s; }
+    .terminal .line:nth-child(7) { animation-delay: 3.7s; }
+    .terminal .line:nth-child(8) { animation-delay: 4.3s; }
+
+    @keyframes typeIn {
+      to { opacity: 1; }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: #00ff41;
+      margin-left: 2px;
+      animation: blink 0.7s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .progress-container {
+      width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: #ff0033;
+      margin-bottom: 6px;
+      text-align: left;
+      letter-spacing: 1px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #111;
+      border: 1px solid #ff0033;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff0033, #ff6600);
+      box-shadow: 0 0 10px #ff0033;
+      animation: fillProgress 6s ease-out forwards;
+    }
+
+    @keyframes fillProgress {
+      0% { width: 0%; }
+      100% { width: 97%; }
+    }
+
+    .countdown {
+      font-size: 42px;
+      font-weight: bold;
+      color: #ff0033;
+      text-shadow: 0 0 15px #ff0033;
+      margin: 10px 0 6px;
+      letter-spacing: 4px;
+    }
+
+    .countdown-label {
+      font-size: 11px;
+      color: #ff6666;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 12px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 10px;
+      color: #004d1a;
+      letter-spacing: 1px;
+      z-index: 10;
+    }
+
+    /* Destello rojo al cargar */
+    .red-flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ff0000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200;
+      animation: redFlash 0.4s ease-out 0.1s;
+    }
+
+    @keyframes redFlash {
+      0% { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+
+    /* Barras de glitch extra */
+    .glitch-bar {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #00ff41;
+      opacity: 0;
+      z-index: 60;
+      pointer-events: none;
+    }
+
+    .glitch-bar:nth-child(1) {
+      top: 18%;
+      animation: barGlitch 4s infinite 0.5s;
+    }
+    .glitch-bar:nth-child(2) {
+      top: 47%;
+      height: 2px;
+      background: #ff0033;
+      animation: barGlitch 5.5s infinite 1.2s;
+    }
+    .glitch-bar:nth-child(3) {
+      top: 72%;
+      animation: barGlitch 3.8s infinite 2.1s;
+    }
+
+    @keyframes barGlitch {
+      0%, 90%, 100% { opacity: 0; transform: scaleX(0); }
+      92% { opacity: 0.8; transform: scaleX(1); }
+      94% { opacity: 0.3; }
+      96% { opacity: 0.9; }
+    }
+  </style>
+</head>
+<body>
+  <div class="red-flash"></div>
+  <div class="glitch-overlay"></div>
+  <div class="glitch-bar"></div>
+  <div class="glitch-bar"></div>
+  <div class="glitch-bar"></div>
+
+  <div class="container">
+    <div class="skull">☠</div>
+    <div class="title">HAS SIDO HACKEADO</div>
+    <div class="subtitle">SISTEMA COMPROMETIDO // ACCESO CONCEDIDO</div>
+
+    <div class="warning-box">
+      <p>⚠ Tu dispositivo ha sido infectado.</p>
+      <p>⚠ Se están extrayendo datos personales...</p>
+      <p>⚠ No cierres esta ventana.</p>
+    </div>
+
+    <div class="terminal" id="terminal">
+      <div class="line">> Estableciendo conexión remota...</div>
+      <div class="line">> Evadiendo firewall [OK]</div>
+      <div class="line">> Inyectando payload...</div>
+      <div class="line">> Acceso a cámara: CONCEDIDO</div>
+      <div class="line">> Acceso a micrófono: CONCEDIDO</div>
+      <div class="line">> Contactos y archivos: DESCARGANDO</div>
+      <div class="line">> Seguimiento de ubicación: ACTIVO</div>
+      <div class="line">> Cifrando dispositivo...<span class="cursor"></span></div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-label">EXTRACCIÓN DE DATOS EN PROGRESO</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="countdown" id="countdown">00:15</div>
+    <div class="countdown-label">Hasta el bloqueo permanente</div>
+  </div>
+
+  <div class="footer">IP REGISTRADA • SESIÓN MONITOREADA • SIN ESCAPATORIA</div>
+
+  <script>
+    // Temporizador de cuenta regresiva
+    let seconds = 15;
+    const el = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+      seconds--;
+      if (seconds < 0) {
+        clearInterval(timer);
+        el.textContent = '00:00';
+        el.style.color = '#ff0000';
+        document.querySelector('.countdown-label').textContent = 'DISPOSITIVO BLOQUEADO';
+        // Susto extra: glitch aleatorio en el cuerpo
+        document.body.style.animation = 'flicker 0.08s infinite';
+        return;
+      }
+      const s = seconds.toString().padStart(2, '0');
+      el.textContent = '00:' + s;
+    }, 1000);
+
+    // Pequeños glitches aleatorios
+    setInterval(() => {
+      if (Math.random() > 0.7) {
+        document.body.style.filter = 'hue-rotate(' + (Math.random() * 40 - 20) + 'deg)';
+        setTimeout(() => {
+          document.body.style.filter = 'none';
+        }, 80);
+      }
+    }, 1800);
+
+    // Prevenir zoom/desplazamiento en móviles
+    document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    document.addEventListener('gesturestart', e => e.preventDefault());
+  </script>
+</body>
+</html>
