@@ -286,26 +286,9 @@
         .pay-section .amount { font-size: 26px; }
         .timer-section .timer-value { font-size: 28px; letter-spacing: 4px; }
     }
-
-    /* Nota de simulación */
-    .sim-notice {
-        position: fixed;
-        bottom: 8px;
-        left: 8px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        font-size: 10px;
-        padding: 4px 8px;
-        border: 1px solid #00ff00;
-        z-index: 9999;
-        letter-spacing: 1px;
-    }
 </style>
 </head>
 <body>
-
-<div class="sim-notice">SIMULACRO EDUCATIVO — NO ES UN ATAQUE REAL</div>
 
 <div class="panel">
     <div class="content">
@@ -379,11 +362,9 @@
 
         <!-- Texto pequeño -->
         <div class="fine-print">
-            Esta es una página de ransomware simulada, creada únicamente con fines educativos y de concienciación.
-            No se cifra ningún archivo, no se recauda ningún pago y no hay malware real presente.
-            La dirección BTC mostrada es una dirección de ejemplo conocida y no está monitorizada.
-            Si estás viendo esto en un incidente real, no pagues — contacta con las autoridades y con un
-            equipo profesional de respuesta ante incidentes de inmediato.
+            Tus archivos permanecerán cifrados hasta que se realice el pago. Una vez confirmado,
+            recibirás la clave privada para restaurar todos tus datos. El incumplimiento del pago
+            en el plazo indicado resultará en la pérdida permanente de la información.
         </div>
 
     </div>
@@ -428,27 +409,22 @@
     tick();
     setInterval(tick, TICK_MS);
 
-    // Botones simulados
+    // Botones simulados (sin referencias a simulacro)
     document.getElementById('payBtn').addEventListener('click', function() {
         alert(
             'VERIFICACIÓN DE PAGO\n\n' +
-            'Solo simulación.\n' +
-            'No se ha realizado ningún pago real ni se ha cifrado ningún archivo.\n\n' +
-            'En un incidente real de ransomware:\n' +
-            '  - NO pagues el rescate.\n' +
-            '  - Desconecta el equipo de la red.\n' +
-            '  - Denúncialo a las autoridades (Policía, Guardia Civil, INCIBE, etc.).\n' +
-            '  - Contacta con un equipo profesional de respuesta ante incidentes.'
+            'No se ha detectado ningún pago en la dirección indicada.\n\n' +
+            'Realiza la transferencia de 0.125 BTC y vuelve a intentarlo.\n' +
+            'La confirmación puede tardar hasta 15 minutos.'
         );
     });
 
     document.getElementById('decryptBtn').addEventListener('click', function() {
         alert(
             'SERVICIO DE DESCIFRADO\n\n' +
-            'Solo simulación.\n' +
-            'El descifrado requiere una clave privada válida que se proporcionaría\n' +
-            'tras el pago en un ataque real.\n\n' +
-            'Nunca confíes en "herramientas de descifrado" de terceros de fuentes desconocidas.'
+            'El descifrado requiere una clave privada válida.\n\n' +
+            'Debes completar el pago para recibir tu clave de descifrado.\n' +
+            'Sin el pago, los archivos permanecerán cifrados.'
         );
     });
 
@@ -458,9 +434,6 @@
         warningBlock.style.opacity = '0.75';
         setTimeout(function() { warningBlock.style.opacity = '1'; }, 120);
     }, 4000);
-
-    console.log('%cSIMULACRO DE RANSOMWARE - ESTILO WANNACRY', 'color:#ff0000;font-size:16px;font-weight:bold;');
-    console.log('%cEsta página es una recreación educativa. No hay riesgo real.', 'color:#00ff00;font-size:12px;');
 })();
 </script>
 
