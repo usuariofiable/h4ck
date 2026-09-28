@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ups, tus archivos han sido cifrados</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        min-height: 100%;
+        background: #000000;
+        font-family: "Lucida Console", "Courier New", monospace;
+        color: #ffffff;
+        overflow-x: hidden;
+    }
+
+    /* Fondo de "consola" con líneas tenues */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image:
+            repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 0, 0.03) 0px,
+                rgba(255, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Contenedor principal, sin marco de ventana */
+    .panel {
+        position: relative;
+        z-index: 2;
+        max-width: 720px;
+        margin: 40px auto;
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #000080;
+        box-shadow: 0 0 0 2px #c0c0c0, 0 0 40px rgba(255, 0, 0, 0.55);
+    }
+
+    /* Contenido principal */
+    .content {
+        padding: 22px 28px 26px;
+        font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #000000;
+        background: #ffffff;
+    }
+
+    /* Encabezado de alerta con icono rojo */
+    .alert-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-bottom: 1px solid #d0d0d0;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+
+    .alert-icon {
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        background: #ff0000;
+        border: 3px solid #a00000;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .alert-icon::before {
+        content: "!";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffffff;
+        font-size: 36px;
+        font-weight: bold;
+        font-family: "Arial Black", Arial, sans-serif;
+        line-height: 1;
+    }
+
+    .alert-header h1 {
+        font-family: "Tahoma", "MS Sans Serif", sans-serif;
+        font-size: 21px;
+        font-weight: bold;
+        color: #cc0000;
+        line-height: 1.2;
+        letter-spacing: 0.2px;
+        animation: titleBlink 2.5s infinite;
+    }
+
+    .alert-header h2 {
+        font-size: 12px;
+        font-weight: normal;
+        color: #444444;
+        margin-top: 3px;
+    }
+
+    @keyframes titleBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.85; }
+    }
+
+    /* Bloque rojo tipo advertencia */
+    .warning-block {
+        background: #ff0000;
+        color: #ffffff;
+        padding: 10px 14px;
+        margin: 14px 0;
+        font-weight: bold;
+        font-size: 13px;
+        border-left: 6px solid #800000;
+        letter-spacing: 0.3px;
+    }
+
+    /* Texto de pago */
+    .pay-section {
+        border: 2px solid #000000;
+        padding: 16px;
+        margin: 18px 0;
+        background: #f4f4f4;
+        text-align: center;
+    }
+
+    .pay-section .label {
+        font-size: 12px;
+        color: #333333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+
+    .pay-section .amount {
+        font-family: "Courier New", monospace;
+        font-size: 34px;
+        font-weight: bold;
+        color: #cc0000;
+        letter-spacing: 2px;
+        margin: 6px 0;
+    }
+
+    .pay-section .amount small {
+        font-size: 14px;
+        color: #555555;
+        font-weight: normal;
+        letter-spacing: 0;
+    }
+
+    .btc-address {
+        background: #ffffff;
+        border: 1px solid #999999;
+        padding: 9px 11px;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        color: #000000;
+        word-break: break-all;
+        margin-top: 8px;
+        text-align: left;
+        letter-spacing: 0.5px;
+    }
+
+    .btc-address::before {
+        content: "BTC: ";
+        font-weight: bold;
+        color: #cc0000;
+    }
+
+    /* Temporizador */
+    .timer-section {
+        background: #000000;
+        color: #ff0000;
+        border: 2px solid #ff0000;
+        padding: 14px;
+        text-align: center;
+        margin: 18px 0;
+        font-family: "Courier New", monospace;
+    }
+
+    .timer-section .timer-label {
+        font-size: 11px;
+        color: #ff6666;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .timer-section .timer-value {
+        font-size: 40px;
+        font-weight: bold;
+        letter-spacing: 6px;
+        text-shadow: 0 0 12px #ff0000, 0 0 4px #ff0000;
+    }
+
+    /* Lista de instrucciones */
+    .instructions {
+        background: #ffffcc;
+        border: 1px solid #cccc00;
+        padding: 14px 18px;
+        margin: 18px 0;
+        font-size: 12px;
+        line-height: 1.7;
+        color: #333333;
+    }
+
+    .instructions ol {
+        margin-left: 18px;
+    }
+
+    .instructions ol li {
+        margin-bottom: 4px;
+    }
+
+    /* Botones */
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        font-family: "Tahoma", "MS Sans Serif", sans-serif;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 9px 26px;
+        border: 2px solid #000000;
+        background: #e0e0e0;
+        color: #000000;
+        cursor: pointer;
+        box-shadow: 2px 2px 0 #808080;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .btn:hover {
+        background: #d0d0d0;
+    }
+
+    .btn:active {
+        box-shadow: none;
+        transform: translate(2px, 2px);
+    }
+
+    .btn-primary {
+        background: #cc0000;
+        color: #ffffff;
+        border-color: #800000;
+        box-shadow: 2px 2px 0 #500000;
+    }
+
+    .btn-primary:hover {
+        background: #e00000;
+    }
+
+    /* Texto pequeño y aviso legal */
+    .fine-print {
+        font-size: 10px;
+        color: #888888;
+        margin-top: 20px;
+        border-top: 1px dashed #cccccc;
+        padding-top: 12px;
+        line-height: 1.5;
+        text-align: justify;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+        .panel { margin: 10px; }
+        .content { padding: 16px; }
+        .alert-header h1 { font-size: 17px; }
+        .pay-section .amount { font-size: 26px; }
+        .timer-section .timer-value { font-size: 28px; letter-spacing: 4px; }
+    }
+
+    /* Nota de simulación */
+    .sim-notice {
+        position: fixed;
+        bottom: 8px;
+        left: 8px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 10px;
+        padding: 4px 8px;
+        border: 1px solid #00ff00;
+        z-index: 9999;
+        letter-spacing: 1px;
+    }
+</style>
+</head>
+<body>
+
+<div class="sim-notice">SIMULACRO EDUCATIVO — NO ES UN ATAQUE REAL</div>
+
+<div class="panel">
+    <div class="content">
+
+        <div class="alert-header">
+            <div class="alert-icon"></div>
+            <div>
+                <h1>Ups, tus archivos han sido cifrados</h1>
+                <h2>¿Qué ha pasado con mi ordenador?</h2>
+            </div>
+        </div>
+
+        <div class="warning-block">
+            ATENCIÓN: Tus archivos han sido cifrados con cifrados militares RSA-2048 y AES-128.
+        </div>
+
+        <p style="margin-bottom: 12px;">
+            <strong>¿Qué ha pasado con mi ordenador?</strong><br>
+            Tus archivos importantes están cifrados. Muchos de tus documentos, fotos, vídeos,
+            bases de datos y otros archivos ya no son accesibles porque han sido cifrados.
+            Puede que estés buscando la forma de recuperar tus archivos, pero no pierdas el
+            tiempo. Nadie puede recuperar tus archivos sin nuestro servicio de descifrado.
+        </p>
+
+        <p style="margin-bottom: 12px;">
+            <strong>¿Puedo recuperar mis archivos?</strong><br>
+            Por supuesto. Garantizamos que puedes recuperar todos tus archivos de forma segura
+            y sencilla. Pero no tienes suficiente tiempo. Puedes descifrar algunos de tus
+            archivos gratis. Prueba ahora haciendo clic en <u>&lt;Descifrar&gt;</u>. Pero si
+            quieres descifrar todos tus archivos, tienes que pagar. Solo tienes <strong>3 días</strong>
+            para realizar el pago. Después de eso, el precio se duplicará. Además, si no pagas
+            en <strong>7 días</strong>, ya no podrás recuperar tus archivos nunca más.
+        </p>
+
+        <!-- Sección de pago -->
+        <div class="pay-section">
+            <div class="label">Cantidad a pagar</div>
+            <div class="amount">€6300 <small>/ 0.125 BTC</small></div>
+            <div class="label" style="margin-top: 12px;">Envía el pago a la siguiente dirección Bitcoin:</div>
+            <div class="btc-address">13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94</div>
+            <div style="font-size: 11px; color: #666666; margin-top: 10px;">
+                El pago se verificará automáticamente en un plazo de 15 minutos.
+            </div>
+        </div>
+
+        <!-- Temporizador -->
+        <div class="timer-section">
+            <div class="timer-label">Tiempo restante antes de que el precio se duplique</div>
+            <div class="timer-value" id="countdown">72:00:00</div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="instructions">
+            <strong>Sigue estos pasos para recuperar tus archivos:</strong>
+            <ol>
+                <li>Compra Bitcoin (BTC) en un exchange (LocalBitcoins, Coinbase, etc.).</li>
+                <li>Envía la cantidad exacta a la dirección BTC mostrada arriba.</li>
+                <li>Después del pago, haz clic en <strong>Verificar pago</strong> y espera la confirmación.</li>
+                <li>Se te proporcionará la clave de descifrado y tus archivos serán restaurados.</li>
+            </ol>
+            <div style="margin-top: 8px; font-size: 11px; color: #666666;">
+                Advertencia: No intentes usar herramientas de descifrado de terceros — dañarán tus archivos de forma permanente.
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="buttons">
+            <button class="btn btn-primary" id="payBtn">Verificar pago</button>
+            <button class="btn" id="decryptBtn">Descifrar</button>
+        </div>
+
+        <!-- Texto pequeño -->
+        <div class="fine-print">
+            Esta es una página de ransomware simulada, creada únicamente con fines educativos y de concienciación.
+            No se cifra ningún archivo, no se recauda ningún pago y no hay malware real presente.
+            La dirección BTC mostrada es una dirección de ejemplo conocida y no está monitorizada.
+            Si estás viendo esto en un incidente real, no pagues — contacta con las autoridades y con un
+            equipo profesional de respuesta ante incidentes de inmediato.
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function() {
+    // Temporizador: 72 horas mostradas, acelerado para demo.
+    // 72h = 259200 segundos. Cada tick (250ms) restamos 120 segundos (2 min).
+    // 259200 / 120 = 2160 ticks * 0.25s = 540s = 9 min.
+    let totalSeconds = 72 * 60 * 60;
+    const TICK_MS = 250;
+    const SECONDS_PER_TICK = 120;
+
+    const countdownEl = document.getElementById('countdown');
+
+    function formatTime(s) {
+        if (s < 0) s = 0;
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return (h < 10 ? '0' + h : h) + ':' +
+               (m < 10 ? '0' + m : m) + ':' +
+               (sec < 10 ? '0' + sec : sec);
+    }
+
+    function tick() {
+        if (totalSeconds <= 0) {
+            countdownEl.textContent = '00:00:00';
+            countdownEl.style.color = '#ffffff';
+            countdownEl.style.textShadow = '0 0 12px #ff0000';
+            return;
+        }
+        countdownEl.textContent = formatTime(totalSeconds);
+        if (totalSeconds < 12 * 3600) {
+            countdownEl.style.color = '#ffaaaa';
+            countdownEl.style.textShadow = '0 0 18px #ff0000, 0 0 6px #ff0000';
+        }
+        totalSeconds -= SECONDS_PER_TICK;
+    }
+
+    tick();
+    setInterval(tick, TICK_MS);
+
+    // Botones simulados
+    document.getElementById('payBtn').addEventListener('click', function() {
+        alert(
+            'VERIFICACIÓN DE PAGO\n\n' +
+            'Solo simulación.\n' +
+            'No se ha realizado ningún pago real ni se ha cifrado ningún archivo.\n\n' +
+            'En un incidente real de ransomware:\n' +
+            '  - NO pagues el rescate.\n' +
+            '  - Desconecta el equipo de la red.\n' +
+            '  - Denúncialo a las autoridades (Policía, Guardia Civil, INCIBE, etc.).\n' +
+            '  - Contacta con un equipo profesional de respuesta ante incidentes.'
+        );
+    });
+
+    document.getElementById('decryptBtn').addEventListener('click', function() {
+        alert(
+            'SERVICIO DE DESCIFRADO\n\n' +
+            'Solo simulación.\n' +
+            'El descifrado requiere una clave privada válida que se proporcionaría\n' +
+            'tras el pago en un ataque real.\n\n' +
+            'Nunca confíes en "herramientas de descifrado" de terceros de fuentes desconocidas.'
+        );
+    });
+
+    // Parpadeo sutil del bloque de advertencia
+    const warningBlock = document.querySelector('.warning-block');
+    setInterval(function() {
+        warningBlock.style.opacity = '0.75';
+        setTimeout(function() { warningBlock.style.opacity = '1'; }, 120);
+    }, 4000);
+
+    console.log('%cSIMULACRO DE RANSOMWARE - ESTILO WANNACRY', 'color:#ff0000;font-size:16px;font-weight:bold;');
+    console.log('%cEsta página es una recreación educativa. No hay riesgo real.', 'color:#00ff00;font-size:12px;');
+})();
+</script>
+
+</body>
+</html>
