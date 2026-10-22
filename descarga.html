@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargar Imagen</title>
+    <title>Descargando imagen...</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -25,12 +25,7 @@
             max-width: 350px;
             width: 100%;
         }
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
+        p { color: #555; }
         .btn {
             display: inline-block;
             background-color: #2ea44f;
@@ -42,25 +37,76 @@
             border-radius: 6px;
             width: 100%;
             box-sizing: border-box;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background-color: #2c974b;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Tu imagen está lista</h2>
-        <!-- Vista previa opcional de la imagen -->
-        <img src="https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/TU-IMAGEN.jpg" alt="Vista previa">
-        
-        <!-- Enlace directo con el atributo download -->
-        <a href="https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/TU-IMAGEN.jpg" class="btn" download="mi-foto.jpg">
-            Descargar Imagen
-        </a>
+        <h2>Preparando descarga...</h2>
+        <p id="status">Tu archivo se descargará en un instante.</p>
+        <a id="manual-btn" class="btn" style="display:none;">Si no se descarga, haz clic aquí</a>
     </div>
+
+    <script>
+        // Diccionario con tus 3 imágenes de GitHub y los nombres con los que se guardarán
+        const images = {
+            "1": {
+                url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Imagen%20de%20ChatGPT%2020%20oct%202026%2C%2010_26_34-2%201.png",
+                name: "imagen-chatgpt.png"
+            },
+            "2": {
+                url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Infograf%C3%ADa%20CiberDay%20sobre%20huella%20digital%201.png",
+                name: "infografia-huella-digital.png"
+            },
+            "3": {
+                url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Banco%20Sabadell%20CiberDay%20infographic.png",
+                name: "infografia-banco-sabadell.png"
+            }
+        };
+
+        // Leer el parámetro GET (ejemplo: ?img=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const imgKey = urlParams.get('img');
+
+        async function descargarImagen() {
+            if (!images[imgKey]) {
+                document.getElementById('status').innerText = "Imagen no encontrada o parámetro inválido.";
+                return;
+            }
+
+            const target = images[imgKey];
+            
+            try {
+                // Hacemos fetch al raw de GitHub (GitHub permite CORS en los archivos raw)
+                const response = await fetch(target.url);
+                const blob = await response.blob();
+                
+                // Creamos una URL local temporal para el blob
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                // Disparamos la descarga automática de forma limpia
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = target.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                document.getElementById('status').innerText = "¡Descarga iniciada con éxito!";
+            } catch (error) {
+                // Si el navegador bloquea el script automático, mostramos el botón manual
+                document.getElementById('status').innerText = "Pulsa el botón para descargar tu imagen:";
+                const btn = document.getElementById('manual-btn');
+                btn.href = target.url;
+                btn.setAttribute('download', target.name);
+                btn.style.display = 'inline-block';
+            }
+        }
+
+        window.onload = descargarImagen;
+    </script>
 
 </body>
 </html>
