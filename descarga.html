@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Descargando imagen...</title>
+    <script>
+        window.onload = function() {
+            // URL directa al archivo raw de GitHub
+            const imageUrl = 'https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Imagen%20de%20ChatGPT%2020%20oct%202026%2C%2010_26_34-2%201.png';
+            
+            // Creamos un enlace invisible para forzar la descarga
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.download = 'configuracion_segura.jpg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+    </script>
+</head>
+<body>
+    <p>Si la descarga no comienza automáticamente, <a href="https://raw.githubusercontent.com/tu-usuario/tu-repo/main/tu-imagen.jpg" download>haz clic aquí</a>.</p>
+</body>
+</html>
