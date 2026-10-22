@@ -3,109 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargando imagen...</title>
+    <title>Descarga de Recursos - S2Grupo</title>
     <style>
+        :root {
+            --s2-primary: #0A192F; /* Azul marino corporativo */
+            --s2-accent: #00A499;  /* Cian / Turquesa característico */
+            --s2-bg: #F4F7F6;      /* Gris claro de fondo */
+            --s2-white: #FFFFFF;
+            --s2-text: #333333;
+            --s2-gray: #666666;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f4f4f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--s2-bg);
+            color: var(--s2-text);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            text-align: center;
             padding: 20px;
+            box-sizing: border-box;
         }
-        .card {
-            background: white;
+
+        .container {
+            background: var(--s2-white);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 350px;
+            box-shadow: 0 8px 24px rgba(10, 25, 47, 0.08);
+            max-width: 400px;
             width: 100%;
+            text-align: center;
+            border-top: 5px solid var(--s2-accent);
         }
-        p { color: #555; }
+
+        /* Estilos del Logo */
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        .logo-container svg {
+            height: 36px;
+            width: auto;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--s2-primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        /* Vista previa de la imagen */
+        .preview-box {
+            width: 100%;
+            height: 200px;
+            background-color: #eaeaea;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        p {
+            color: var(--s2-gray);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
         .btn {
             display: inline-block;
-            background-color: #2ea44f;
-            color: white;
+            background-color: var(--s2-accent);
+            color: var(--s2-white);
             padding: 12px 20px;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: bold;
             text-decoration: none;
             border-radius: 6px;
             width: 100%;
             box-sizing: border-box;
-            margin-top: 15px;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 164, 153, 0.2);
+        }
+
+        .btn:hover {
+            background-color: #008f85;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--s2-accent);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Preparando descarga...</h2>
-        <p id="status">Tu archivo se descargará en un instante.</p>
-        <a id="manual-btn" class="btn" style="display:none;">Si no se descarga, haz clic aquí</a>
+    <div class="container">
+        <!-- Logo Corporativo S2Grupo (Vectorial optimizado) -->
+        <div class="logo-container">
+            <svg viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="28" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#0A192F">S2<tspan fill="#00A499">GRUPO</tspan></text>
+            </svg>
+        </div>
+
+        <h2 id="title-text">Vista previa del recurso</h2>
+        
+        <!-- Contenedor de la imagen que se muestra al cargar -->
+        <div class="preview-box">
+            <img id="preview-img" src="" alt="Cargando vista previa..." style="display: none;">
+            <div id="loader" class="loader" style="display: block;"></div>
+        </div>
+
+        <p id="status-text">Cargando información del archivo...</p>
+
+        <!-- Botón de descarga manual -->
+        <button id="download-btn" class="btn" style="display: none;" onclick="ejecutarDescarga()">Descargar Archivo</button>
     </div>
 
     <script>
-        // Diccionario con tus 3 imágenes de GitHub y los nombres con los que se guardarán
+        // Configuración de tus 3 imágenes con sus nombres limpios
         const images = {
             "1": {
                 url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Imagen%20de%20ChatGPT%2020%20oct%202026%2C%2010_26_34-2%201.png",
-                name: "imagen-chatgpt.png"
+                name: "imagen-chatgpt-s2grupo.png",
+                title: "Imagen ChatGPT - Ciberseguridad"
             },
             "2": {
                 url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Infograf%C3%ADa%20CiberDay%20sobre%20huella%20digital%201.png",
-                name: "infografia-huella-digital.png"
+                name: "infografia-huella-digital.png",
+                title: "Infografía Huella Digital"
             },
             "3": {
                 url: "https://raw.githubusercontent.com/usuariofiable/h4ck/refs/heads/main/Banco%20Sabadell%20CiberDay%20infographic.png",
-                name: "infografia-banco-sabadell.png"
+                name: "infografia-banco-sabadell.png",
+                title: "Infografía Banco Sabadell"
             }
         };
 
-        // Leer el parámetro GET (ejemplo: ?img=1)
         const urlParams = new URLSearchParams(window.location.search);
         const imgKey = urlParams.get('img');
+        
+        let archivoActual = null;
 
-        async function descargarImagen() {
+        window.addEventListener('DOMContentLoaded', () => {
             if (!images[imgKey]) {
-                document.getElementById('status').innerText = "Imagen no encontrada o parámetro inválido.";
+                document.getElementById('title-text').innerText = "Recurso no encontrado";
+                document.getElementById('status-text').innerText = "El código QR no es válido o el parámetro es incorrecto.";
+                document.getElementById('loader').style.display = 'none';
                 return;
             }
 
-            const target = images[imgKey];
+            archivoActual = images[imgKey];
+            
+            // Actualizamos textos y mostramos la vista previa de la imagen
+            document.getElementById('title-text').innerText = archivoActual.title;
+            const imgElement = document.getElementById('preview-img');
+            
+            imgElement.src = archivoActual.url;
+            imgElement.onload = function() {
+                document.getElementById('loader').style.display = 'none';
+                imgElement.style.display = 'block';
+                document.getElementById('status-text').innerText = "Pulsa el botón para descargar la imagen en alta calidad.";
+                document.getElementById('download-btn').style.display = 'inline-block';
+            };
+            
+            imgElement.onerror = function() {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('status-text').innerText = "No se pudo cargar la vista previa, pero puedes descargarla directamente.";
+                document.getElementById('download-btn').style.display = 'inline-block';
+            };
+        });
+
+        async function ejecutarDescarga() {
+            if (!archivoActual) return;
+            
+            document.getElementById('status-text').innerText = "Iniciando descarga...";
             
             try {
-                // Hacemos fetch al raw de GitHub (GitHub permite CORS en los archivos raw)
-                const response = await fetch(target.url);
+                const response = await fetch(archivoActual.url);
                 const blob = await response.blob();
-                
-                // Creamos una URL local temporal para el blob
                 const blobUrl = window.URL.createObjectURL(blob);
                 
-                // Disparamos la descarga automática de forma limpia
                 const a = document.createElement('a');
                 a.href = blobUrl;
-                a.download = target.name;
+                a.download = archivoActual.name;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 
-                document.getElementById('status').innerText = "¡Descarga iniciada con éxito!";
+                document.getElementById('status-text').innerText = "¡Descarga completada con éxito!";
             } catch (error) {
-                // Si el navegador bloquea el script automático, mostramos el botón manual
-                document.getElementById('status').innerText = "Pulsa el botón para descargar tu imagen:";
-                const btn = document.getElementById('manual-btn');
-                btn.href = target.url;
-                btn.setAttribute('download', target.name);
-                btn.style.display = 'inline-block';
+                // Fallback directo si el navegador bloquea el blob por CORS estricto
+                const a = document.createElement('a');
+                a.href = archivoActual.url;
+                a.download = archivoActual.name;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                document.getElementById('status-text').innerText = "¡Descarga iniciada!";
             }
         }
-
-        window.onload = descargarImagen;
     </script>
 
 </body>
