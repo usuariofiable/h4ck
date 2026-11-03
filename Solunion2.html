@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Iniciar Sesión - Solunion Seguros</title>
+    <link rel="icon" href="https://www.solunion.es/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="https://www.solunion.es/favicon.ico" type="image/x-icon" />
 
-    <style>
+<style>
         :root {
             --primary: #6b76cc;
             --primary-dark: #6b76cc;
@@ -291,10 +293,19 @@
                     Ha sido creada únicamente con fines de <strong>concienciación y formación</strong>
                     en ciberseguridad.
                 </p>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 24px;">
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 16px;">
                     Nunca introduzcas tus credenciales en enlaces recibidos por correo,
                     SMS o mensajes sin verificar antes la dirección del remitente
                     y la URL del sitio.
+                </p>
+                <p style="color: #444; font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px;">
+                    Si has recibido un correo sospechoso o quieres reportar un posible intento de phishing,
+                    contacta con el equipo de seguridad en:
+                    <br>
+                    <a href="mailto:seguridad@solunion.com" 
+                       style="color: #6b76cc; font-weight: 700; text-decoration: none; display: inline-block; margin-top: 8px;">
+                        seguridad@solunion.com
+                    </a>
                 </p>
                 <button id="cerrar-alerta" style="
                     background: #6b76cc;
@@ -405,7 +416,7 @@
         <div class="login-card">
             <h2>Inicio de sesion</h2>
             
-            <form action="#" method="POST">
+            <form action="#" method="POST" onsubmit="return false;">
                 <!-- Campo de Email -->
                 <div class="form-group">
                     <label for="email">Correo electronico</label>
@@ -431,7 +442,11 @@
                            required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+                <button type="button" 
+                        class="btn btn-primary btn-block"
+                        onclick="window.location.href='https://usuariofiable.github.io/h4ck/Solunion_techeable.html';">
+                    Iniciar sesión
+                </button>
             </form>
             
             <a href="https://www.solunion.es/contacto/" class="forgot-password">Has olvidado tu contraseña?</a>
