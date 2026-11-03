@@ -245,7 +245,7 @@
 
 <script>
     (function() {
-        const TIEMPO_ESPERA = 30000; // 60 segundos
+        const TIEMPO_ESPERA = 30000; // 30 segundos
         let tiempoAcumulado = 0;
         let tiempoInicio = null;
         let temporizador = null;
@@ -344,13 +344,13 @@
         function iniciarTemporizador() {
             if (yaMostrado) return;
             if (temporizador) return; // ya está corriendo
+            if (document.hidden || !document.hasFocus()) return; // seguridad extra
             tiempoInicio = Date.now();
             temporizador = setTimeout(() => {
-                // Solo mostramos si la pestaña sigue visible
-                if (!document.hidden) {
+                // Solo mostramos si la pestaña sigue visible y con foco
+                if (!document.hidden && document.hasFocus()) {
                     mostrarAlertaPhishing();
                 } else {
-                    // Si por alguna razón estaba oculta, pausamos y reevaluamos
                     pausarTemporizador();
                 }
             }, TIEMPO_ESPERA - tiempoAcumulado);
@@ -368,16 +368,37 @@
             }
         }
 
-        // Detecta visibilidad de la pestaña
+        // 1) Cambio de pestaña / minimizar navegador / cambiar de app
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 pausarTemporizador();
-            } else {
+            } else if (!yaMostrado) {
                 iniciarTemporizador();
             }
         });
 
-        // Detecta actividad del usuario (solo para asegurar que la página está "en uso")
+        // 2) Pérdida/recuperación de foco (cambio de app en iOS, selector de apps, etc.)
+        window.addEventListener('blur', function() {
+            pausarTemporizador();
+        });
+        window.addEventListener('focus', function() {
+            if (!yaMostrado) iniciarTemporizador();
+        });
+
+        // 3) Navegación fuera / bfcache (Safari iOS y otros)
+        window.addEventListener('pagehide', function() {
+            pausarTemporizador();
+        });
+        window.addEventListener('pageshow', function(event) {
+            // Si vuelve desde bfcache o recarga, reanudamos solo si está visible
+            if (!event.persisted && !document.hidden && !yaMostrado) {
+                iniciarTemporizador();
+            } else if (event.persisted && !document.hidden && !yaMostrado) {
+                iniciarTemporizador();
+            }
+        });
+
+        // 4) Actividad del usuario (arranca el temporizador si no estaba corriendo)
         ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evento => {
             document.addEventListener(evento, function() {
                 if (!document.hidden && !yaMostrado && !temporizador) {
@@ -386,10 +407,12 @@
             }, { passive: true });
         });
 
-        // Iniciar al cargar la página (si está visible)
-        if (!document.hidden) {
+        // 5) Arranque inicial: SOLO si la página está visible y con foco
+        if (!document.hidden && document.hasFocus()) {
             iniciarTemporizador();
         }
+        // Si al cargar no tiene foco (p. ej. abierta en segundo plano), no arranca
+        // hasta que el usuario interactúe o vuelva a la pestaña/aplicación.
     })();
 </script>
 
