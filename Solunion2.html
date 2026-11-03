@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Iniciar Sesión - Solunion Seguros</title>
+
+    <style>
+        :root {
+            --primary: #6b76cc;
+            --primary-dark: #6b76cc;
+            --secondary: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border-color: #ced4da;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', system-ui, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--secondary);
+            background-color: var(--light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative; /* Necesario para centrar el título con position absolute */
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            position: relative; /* Contenedor de referencia para el título centrado */
+            min-height: 80px;
+        }
+
+        .logo img {
+            height: 48px;
+            width: auto;
+            display: block;
+        }
+
+        /* Mensaje central en el header - centrado absoluto */
+        .header-title-middle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--secondary);
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none; /* Evita que interfiera con clics */
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover, .btn-primary:active {
+            background-color: var(--primary-dark);
+        }
+
+        /* Contenido principal centrado */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        /* login-card CARD */
+        .login-card {
+            background: white;
+            padding: 32px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            font-size: 1.45rem;
+            color: var(--secondary);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(92, 21, 125, 0.15);
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .forgot-password {
+            display: inline-block;
+            margin-top: 24px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover, .forgot-password:active {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Footer adaptable */
+        .footer {
+            background: #212529; 
+            color: #ddd; 
+            padding: 30px 20px; 
+            text-align: center; 
+            font-size: 0.85rem;
+        }
+
+        .footer-links {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .footer-links a {
+            color: #bbb; 
+            text-decoration: none;
+            padding: 6px;
+        }
+
+        /* Responsive Móvil Estricto (< 560px) */
+        @media (max-width: 560px) {
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 1rem 15px;
+                text-align: center;
+                min-height: auto;
+            }
+
+            .logo img {
+                height: 38px;
+                margin: 0 auto;
+            }
+
+            /* En móvil, quitamos el posicionamiento absoluto y lo dejamos en flujo normal */
+            .header-title-middle {
+                position: static;
+                transform: none;
+                font-size: 1.1rem;
+                width: 100%;
+                margin: 4px 0;
+                white-space: normal;
+                pointer-events: auto;
+            }
+
+            .login-card {
+                padding: 24px 16px;
+                border-radius: 6px;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+            }
+
+            body {
+                background-color: white;
+            }
+
+            .login-card {
+                background: white;
+            }
+        }
+    </style>
+</head>
+
+<script>
+    (function() {
+        const TIEMPO_ESPERA = 60000; // 60 segundos
+        let tiempoAcumulado = 0;
+        let tiempoInicio = null;
+        let temporizador = null;
+        let yaMostrado = false;
+
+        // Elemento modal (lo creamos dinámicamente)
+        function mostrarAlertaPhishing() {
+            if (yaMostrado) return;
+            yaMostrado = true;
+
+            // Crear overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'phishing-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.75);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+                padding: 20px;
+                animation: fadeIn 0.4s ease;
+            `;
+
+            // Crear tarjeta del mensaje
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: #fff;
+                border-radius: 12px;
+                max-width: 520px;
+                width: 100%;
+                padding: 36px 28px;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+                border-top: 6px solid #d9534f;
+            `;
+            card.innerHTML = `
+                <div style="font-size: 3rem; line-height: 1; margin-bottom: 12px;">⚠️</div>
+                <h2 style="color: #d9534f; font-size: 1.6rem; margin-bottom: 16px; font-weight: 700;">
+                    Esto era una prueba de phishing
+                </h2>
+                <p style="color: #444; font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+                    Esta página <strong>NO</strong> es un sitio oficial de Solunion Seguros.
+                    Ha sido creada únicamente con fines de <strong>concienciación y formación</strong>
+                    en ciberseguridad.
+                </p>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 24px;">
+                    Nunca introduzcas tus credenciales en enlaces recibidos por correo,
+                    SMS o mensajes sin verificar antes la dirección del remitente
+                    y la URL del sitio.
+                </p>
+                <button id="cerrar-alerta" style="
+                    background: #6b76cc;
+                    color: white;
+                    border: none;
+                    padding: 12px 28px;
+                    border-radius: 6px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">Entendido</button>
+                <p style="color: #999; font-size: 0.75rem; margin-top: 20px;">
+                    Si has introducido datos reales, cambia tu contraseña inmediatamente.
+                </p>
+            `;
+
+            overlay.appendChild(card);
+            document.body.appendChild(overlay);
+
+            // Bloquear scroll de fondo
+            document.body.style.overflow = 'hidden';
+
+            // Botón cerrar
+            document.getElementById('cerrar-alerta').addEventListener('click', function() {
+                overlay.remove();
+                document.body.style.overflow = '';
+            });
+
+            // Animación
+            const style = document.createElement('style');
+            style.textContent = `@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`;
+            document.head.appendChild(style);
+        }
+
+        // Inicia o reanuda el temporizador
+        function iniciarTemporizador() {
+            if (yaMostrado) return;
+            if (temporizador) return; // ya está corriendo
+            tiempoInicio = Date.now();
+            temporizador = setTimeout(() => {
+                // Solo mostramos si la pestaña sigue visible
+                if (!document.hidden) {
+                    mostrarAlertaPhishing();
+                } else {
+                    // Si por alguna razón estaba oculta, pausamos y reevaluamos
+                    pausarTemporizador();
+                }
+            }, TIEMPO_ESPERA - tiempoAcumulado);
+        }
+
+        // Pausa el temporizador guardando el tiempo transcurrido
+        function pausarTemporizador() {
+            if (temporizador) {
+                clearTimeout(temporizador);
+                temporizador = null;
+            }
+            if (tiempoInicio !== null) {
+                tiempoAcumulado += Date.now() - tiempoInicio;
+                tiempoInicio = null;
+            }
+        }
+
+        // Detecta visibilidad de la pestaña
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                pausarTemporizador();
+            } else {
+                iniciarTemporizador();
+            }
+        });
+
+        // Detecta actividad del usuario (solo para asegurar que la página está "en uso")
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evento => {
+            document.addEventListener(evento, function() {
+                if (!document.hidden && !yaMostrado && !temporizador) {
+                    iniciarTemporizador();
+                }
+            }, { passive: true });
+        });
+
+        // Iniciar al cargar la página (si está visible)
+        if (!document.hidden) {
+            iniciarTemporizador();
+        }
+    })();
+</script>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="navbar">
+            <!-- Logo oficial -->
+            <a href="#" class="logo">
+                <img src="https://www.solunion.es/wp-content/uploads/2020/02/logo-solunion-1.png" 
+                     alt="Solunion Seguros">
+            </a>
+
+            <!-- Mensaje central -->
+            <div class="header-title-middle">
+                Beneficios Soluniers
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="login-card">
+            <h2>Inicio de sesion</h2>
+            
+            <form action="#" method="POST">
+                <!-- Campo de Email -->
+                <div class="form-group">
+                    <label for="email">Correo electronico</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-control" 
+                           placeholder="usuario@solunion.es" 
+                           required 
+                           autocomplete="email"
+                           autofocus>
+                </div>
+
+                <!-- Campo de Contraseña -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           class="form-control" 
+                           placeholder="••••••••" 
+                           autocomplete="current-password"
+                           required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+            </form>
+            
+            <a href="https://www.solunion.es/contacto/" class="forgot-password">Has olvidado tu contraseña?</a>
+        </div>
+    </main>
+
+    <!-- Footer adaptado -->
+    <footer class="footer">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p>© 2005 Solunion Seguros. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="https://www.solunion.es/aviso-legal/">Aviso Legal</a>
+                <a href="https://www.solunion.es/politica-de-privacidad/">Política de Privacidad</a>
+                <a href="https://www.solunion.es/politica-de-cookies">Política de Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
